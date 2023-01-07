@@ -6,13 +6,11 @@ on:
     branches:
       - "**"
 
-
 jobs:
   build_privado:
     strategy:
       matrix:
-        owner: ["Privado-Inc"]
-        ref: ["${{github.head_ref}}", "${{github.base_ref}}"]
+        ref: [{ branch: "${{github.head_ref}}", owner: "nco"}, { branch: "${{github.base_ref}}", owner: "nn"]
           
     runs-on: ubuntu-latest
     steps:
@@ -27,30 +25,31 @@ jobs:
       - name: Export Java Home Path
         run: export PATH=$JAVA_HOME/bin:$PATH
 
+      - name: check
+        run: echo ${{matrix.ref.branch}}
+
       - name: Install sbt
         run: mkdir -p ~/bin && curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > ~/bin/sbt && chmod 0755 ~/bin/sbt
 
-      - name: Clone privado-core/${{matrix.ref}}
+      - name: Clone privado-core/${{matrix.ref.branch}}
         uses: actions/checkout@v3
         with:
-          repository: ${{matrix.owner}}/privado-core
-          path: ./temp/${{matrix.ref}}
-          ref: ${{matrix.ref}} 
+          repository: ${{matrix.ref.owner}}/privado-core
+          path: ./temp/${{matrix.ref.branch}}
+          ref: ${{matrix.ref.branch}} 
       
-
-      - name: Build Privado binary for ${{matrix.ref}} branch
-        run: cd ${GITHUB_WORKSPACE}/temp/${{matrix.ref}} && ~/bin/sbt -java-home $JAVA_HOME clean && ~/bin/sbt -java-home $JAVA_HOME stage 
+      - name: Build Privado binary for ${{matrix.ref.branch}} branch
+        run: cd ${GITHUB_WORKSPACE}/temp/${{matrix.ref.branch}} && ~/bin/sbt -java-home $JAVA_HOME clean && ~/bin/sbt -java-home $JAVA_HOME stage 
 
       - name: Set env
-        run: echo "UPLOAD_NAME=$(echo ${{ matrix.ref }} | base64)" >> $GITHUB_ENV
+        run: echo "UPLOAD_NAME=$(echo ${{ matrix.ref.branch }} | base64)" >> $GITHUB_ENV
 
 
       - name: Upload privado binary for next job
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.UPLOAD_NAME }}
-          path: /home/runner/work/privado-core/privado-core/temp/${{matrix.ref}}/target/universal/stage
-          
+          path: /home/runner/work/privado-core/privado-core/temp/${{matrix.ref.branch}}/target/universal/stage
 
   scan_repositories:
     needs: build_privado
