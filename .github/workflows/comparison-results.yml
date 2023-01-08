@@ -10,7 +10,7 @@ jobs:
   build_privado:
     strategy:
       matrix:
-        ref: [{ branch: "${{github.head_ref}}", owner: "nco"}, { branch: "${{github.base_ref}}", owner: "nn"]
+        ref: [{ branch: ${{github.head_ref}}, owner: "nco"}, { branch: ${{github.base_ref}}, owner: "nn"]
           
     runs-on: ubuntu-latest
     steps:
