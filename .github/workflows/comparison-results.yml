@@ -25,16 +25,10 @@ jobs:
       - name: Export Java Home Path
         run: export PATH=$JAVA_HOME/bin:$PATH
 
-      - name: check
-        run: echo ${{matrix.ref.branch}}
-
-      - name: check 1
-        run: echo ${{ matrix.ref.owner }}
-
       - name: Install sbt
         run: mkdir -p ~/bin && curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > ~/bin/sbt && chmod 0755 ~/bin/sbt
 
-      - name: Clone privado-core/${{matrix.ref.branch}}
+      - name: Clone ${{matrix.ref.owner}}/${{matrix.ref.branch}}
         uses: actions/checkout@v3
         with:
           repository: ${{matrix.ref.owner}}/privado-core
@@ -44,14 +38,16 @@ jobs:
       - name: Build Privado binary for ${{matrix.ref.branch}} branch
         run: cd ${GITHUB_WORKSPACE}/temp/${{matrix.ref.branch}} && ~/bin/sbt -java-home $JAVA_HOME clean && ~/bin/sbt -java-home $JAVA_HOME stage 
 
-      - name: Set env
-        run: echo "UPLOAD_NAME=$(echo ${{ matrix.ref.branch }} | base64)" >> $GITHUB_ENV
+      - name: check 3
+        run: echo "${{env.UPLOAD_NAME}}-${{ matrix.ref.branch }}""
 
+      - name: Set env
+        run: echo "UPLOAD_NAME=$(echo "${{env.UPLOAD_NAME}}-${{ matrix.ref.branch }} | base64)" >> $GITHUB_ENV
 
       - name: Upload privado binary for next job
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.UPLOAD_NAME }}
+          name: ${{env.UPLOAD_NAME}}-${{ matrix.ref.branch }}
           path: /home/runner/work/privado-core/privado-core/temp/${{matrix.ref.branch}}/target/universal/stage
 
   scan_repositories:
@@ -73,7 +69,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set env
-        run: echo "BASE_NAME=$(echo ${{ github.base_ref }} | base64)" >> $GITHUB_ENV && echo "HEAD_NAME=$(echo ${{ github.head_ref }} | base64)" >> $GITHUB_ENV
+        run: echo "BASE_NAME=$(echo "${{ github.event.pull_request.base.repo.owner.login }}-${{ github.base_ref }}" | base64)" >> $GITHUB_ENV && echo "HEAD_NAME=$(echo "${{ github.event.pull_request.head.repo.owner.login }}-${{ github.head_ref }}" | base64)" >> $GITHUB_ENV
 
       - name: Install JDK-18
         uses: actions/setup-java@v3
@@ -83,15 +79,6 @@ jobs:
 
       - name: Export Java Home Path
         run: export PATH=$JAVA_HOME/bin:$PATH
-
-      # - name: Java path
-      #   run: echo $JAVA_HOME
-
-      # - name: check java version
-      #   run: java -version
-
-      # - name: check javac version 
-      #   run: javac -version
 
       - name: Clone Privado-Inc/privado
         uses: actions/checkout@v3
