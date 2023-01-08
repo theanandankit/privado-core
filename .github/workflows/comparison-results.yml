@@ -10,26 +10,26 @@ jobs:
   build_privado:
     strategy:
       matrix:
-        ref: [{ branch: "${{github.head_ref}}", owner: "nco"}, { branch: "${{github.base_ref}}", owner: "nn"}]
+        ref: [{ branch: "${{github.head_ref}}", owner: "${{ github.event.pull_request.head.repo.owner.login }}"}, { branch: "${{github.base_ref}}", owner: "${{ github.event.pull_request.base.repo.owner.login }}"}]
           
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
           
-      # - name: Install JDK-18
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     distribution: 'temurin'
-      #     java-version: '18'
+      - name: Install JDK-18
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '18'
 
-      # - name: Export Java Home Path
-      #   run: export PATH=$JAVA_HOME/bin:$PATH
+      - name: Export Java Home Path
+        run: export PATH=$JAVA_HOME/bin:$PATH
 
       - name: check
         run: echo ${{matrix.ref.branch}}
 
       - name: check 1
-        run: echo ${{ github.event.pull_request.head.repo.owner.login }}
+        run: echo ${{ matrix.ref.owner }}
 
       - name: Install sbt
         run: mkdir -p ~/bin && curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > ~/bin/sbt && chmod 0755 ~/bin/sbt
