@@ -41,6 +41,9 @@ jobs:
       - name: Set env
         run: echo "UPLOAD_NAME=$(echo "${{env.UPLOAD_NAME}}-${{ matrix.ref.branch }}" | base64)" >> $GITHUB_ENV
 
+      - name: check4
+        run: echo ${{env.UPLOAD_NAME}}
+
       - name: check 3
         run: echo "${{env.UPLOAD_NAME}}-${{ matrix.ref.branch }}"
 
