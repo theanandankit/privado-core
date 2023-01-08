@@ -24,6 +24,9 @@ jobs:
 
       - name: Export Java Home Path
         run: export PATH=$JAVA_HOME/bin:$PATH
+      
+      - name: check 33
+        run: echo "${{env.UPLOAD_NAME}}-${{ matrix.ref.branch }}"
 
       - name: Install sbt
         run: mkdir -p ~/bin && curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > ~/bin/sbt && chmod 0755 ~/bin/sbt
