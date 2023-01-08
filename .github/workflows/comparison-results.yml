@@ -39,7 +39,7 @@ jobs:
         run: echo "BRANCH_UPLOAD_NAME=$(echo ${{ matrix.ref.branch }} | base64)" >> $GITHUB_ENV
 
       - name: Set Owner env
-        run: echo "OWNER_UPLOAD_NAME"=$(echo ${{ matrix.ref.owner }} | base64)" >> $GITHUB_ENV
+        run: echo "OWNER_UPLOAD_NAME=$(echo ${{ matrix.ref.owner }} | base64)" >> $GITHUB_ENV
       
       - name: Build Privado binary for ${{matrix.ref.branch}} branch
         run: cd ${GITHUB_WORKSPACE}/temp/${{env.OWNER_UPLOAD_NAME}}-${{env.BRANCH_UPLOAD_NAME}} && ~/bin/sbt -java-home $JAVA_HOME clean && ~/bin/sbt -java-home $JAVA_HOME stage 
