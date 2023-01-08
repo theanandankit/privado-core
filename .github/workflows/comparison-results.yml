@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ${{env.OWNER_UPLOAD_NAME}}-${{env.BRANCH_UPLOAD_NAME}}
-          path: /home/runner/work/privado-core/privado-core/temp/${{matrix.ref.branch}}/target/universal/stage
+          path: /home/runner/work/privado-core/privado-core/temp/${{env.OWNER_UPLOAD_NAME}}-${{env.BRANCH_UPLOAD_NAME}}/target/universal/stage
 
   scan_repositories:
     needs: build_privado
