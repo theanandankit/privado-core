@@ -28,18 +28,18 @@ jobs:
       - name: Install sbt
         run: mkdir -p ~/bin && curl -Ls https://raw.githubusercontent.com/dwijnand/sbt-extras/master/sbt > ~/bin/sbt && chmod 0755 ~/bin/sbt
 
-      - name: Clone ${{matrix.ref.owner}}/${{matrix.ref.branch}}
-        uses: actions/checkout@v3
-        with:
-          repository: ${{matrix.ref.owner}}/privado-core
-          path: ./temp/${{matrix.ref.owner}}-${{matrix.ref.branch}}
-          ref: ${{matrix.ref.branch}} 
-      
       - name: Set Branch env
         run: echo "BRANCH_UPLOAD_NAME=$(echo ${{ matrix.ref.branch }} | base64)" >> $GITHUB_ENV
 
       - name: Set Owner env
         run: echo "OWNER_UPLOAD_NAME=$(echo ${{ matrix.ref.owner }} | base64)" >> $GITHUB_ENV
+
+      - name: Clone ${{matrix.ref.owner}}/${{matrix.ref.branch}}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{matrix.ref.owner}}/privado-core
+          path: ./temp/${{env.OWNER_UPLOAD_NAME}}-${{env.BRANCH_UPLOAD_NAME}}
+          ref: ${{matrix.ref.branch}} 
       
       - name: Build Privado binary for ${{matrix.ref.branch}} branch
         run: cd ${GITHUB_WORKSPACE}/temp/${{env.OWNER_UPLOAD_NAME}}-${{env.BRANCH_UPLOAD_NAME}} && ~/bin/sbt -java-home $JAVA_HOME clean && ~/bin/sbt -java-home $JAVA_HOME stage 
