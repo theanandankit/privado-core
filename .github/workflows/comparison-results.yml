@@ -105,7 +105,7 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: ${{ env.HEAD_OWNER_NAME }}-${{ env.HEAD_BRANCH_NAME }}
-          path: ./privado-core-and-rules/${{ env.BASE_OWNER_NAME }}-${{ env.BASE_BRANCH_NAME }}/privado-core-binary
+          path: ./privado-core-and-rules/${{ env.HEAD_OWNER_NAME }}-${{ env.HEAD_BRANCH_NAME }}/privado-core-binary
 
       - name: Create Folder to store reports
         run: mkdir ${GITHUB_WORKSPACE}/reports && mkdir -p ${GITHUB_WORKSPACE}/${{matrix.repo_name}}_results/${{ env.BASE_OWNER_NAME }}-${{ env.BASE_BRANCH_NAME }} && mkdir -p ${GITHUB_WORKSPACE}/${{matrix.repo_name}}_results/${{ env.HEAD_OWNER_NAME }}-${{ env.HEAD_BRANCH_NAME }} && mkdir ${GITHUB_WORKSPACE}/time_results
@@ -135,7 +135,7 @@ jobs:
           repository: ${{matrix.owner}}/${{matrix.repo_name}}
           path: ./repos/${{matrix.repo_name}}
 
-      - name: change permission of stable privado-core
+      - name: change permission of ${{github.base_ref}} branch privado-core
         run: chmod 777 ${GITHUB_WORKSPACE}/privado-core-and-rules/${{ env.BASE_OWNER_NAME }}-${{ env.BASE_BRANCH_NAME }}/privado-core-binary/bin/privado-core
 
       - name: change permission of dev privado-core
