@@ -71,8 +71,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set env 
-        run: echo "BASE_NAME=$(echo "${{ github.event.pull_request.base.repo.owner.login }}-${{ github.base_ref }}" | base64)" >> $GITHUB_ENV && echo "HEAD_NAME=$(echo "${{ github.event.pull_request.head.repo.owner.login }}-${{ github.head_ref }}" | base64)" >> $GITHUB_ENV
+      # - name: Set env 
+      #   run: echo "BASE_NAME=$(echo "${{ github.event.pull_request.base.repo.owner.login }}-${{ github.base_ref }}" | base64)" >> $GITHUB_ENV && echo "HEAD_NAME=$(echo "${{ github.event.pull_request.head.repo.owner.login }}-${{ github.head_ref }}" | base64)" >> $GITHUB_ENV
+
+      - name: Set Branch env
+        run: echo "HEAD_OWNER_NAME=$(echo ${{github.event.pull_request.head.repo.owner.login}} | base64)" >> $GITHUB_ENV && echo "BASE_OWNER_NAME=$(echo ${{github.event.pull_request.base.repo.owner.login}} | base64)" >> $GITHUB_ENV
+
+      - name: Ser Owner env
+        run: echo "HEAD_BRANCH_NAME=$(echo ${{github.head_ref}} | base64)" >> $GITHUB_ENV && echo "BASE_BRANCH_NAME=$(echo ${{github.base_ref}} | base64)" >> $GITHUB_ENV
 
       - name: Install JDK-18
         uses: actions/setup-java@v3
@@ -92,13 +98,13 @@ jobs:
       - name: Download base binary 
         uses: actions/download-artifact@master
         with:
-          name: ${{ env.BASE_NAME }}
+          name: ${{ env.BASE_OWNER_NAME }}-${{ env.BASE_BRANCH_NAME }}
           path: ./privado-core-and-rules/${{ env.BASE_NAME }}/privado-core-binary
 
       - name: Download head binary 
         uses: actions/download-artifact@master
         with:
-          name: ${{ env.HEAD_NAME }}
+          name: ${{ env.HEAD_OWNER_NAME }}-${{ env.HEAD_BRANCH_NAME }}
           path: ./privado-core-and-rules/${{ env.HEAD_NAME }}/privado-core-binary
 
       - name: Create Folder to store reports
