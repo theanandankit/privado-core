@@ -3,6 +3,7 @@ name: Monitoring Stability and Comparing Results
 # Triggers when a pull_request or a push action is configured on master branch
 on:
   pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
     branches:
       - "**"
 
