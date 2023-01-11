@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: value
-        run: echo ${{ github.event.pull_request.url}}
+        run: echo ${{ github.event.pull_request.html_url}}
           
       - name: Install JDK-18
         uses: actions/setup-java@v3
