@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: value
-        run: echo "this is theanandankit base branch workflow"
+        run: echo ${{ github.event.pull_request.url}}
           
       - name: Install JDK-18
         uses: actions/setup-java@v3
